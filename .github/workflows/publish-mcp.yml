@@ -21,5 +21,7 @@ jobs:
           tar -xzf "mcp-publisher_${OS}_${ARCH}.tar.gz"
       - name: Verify installation
         run: ./mcp-publisher --help
+      - name: Login to MCP Registry
+        run: ./mcp-publisher login github-oidc
       - name: Run the Publisher
         run: ./mcp-publisher publish
