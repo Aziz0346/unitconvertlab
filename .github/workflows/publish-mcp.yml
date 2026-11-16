@@ -1,0 +1,26 @@
+name: Publish to MCP Registry
+on:
+  push:
+    tags: ["v*.*.*"]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install mcp-publisher
+        run: |
+          MCP_PUBLISHER_VERSION="v1.1.1"
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
+          curl -LO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz"
+          curl -LO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz.sigstore.json"
+          npm install -g @sigstore/cli
+          npx sigstore verify-bundle --bundle "mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz.sigstore.json" --certificate-identity-regexp "^https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}$" --certificate-oidc-issuer "https://token.actions.githubusercontent.com" "mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz"
+          tar -xzf "mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz"
+      - name: Verify installation
+        run: ./mcp-publisher --help
+      - name: Run the Publisher
+        run: ./mcp-publisher publish
