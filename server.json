@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.aziz0346/unitconvertlab",
+  "title": "UnitConvertLab",
+  "description": "Unit conversions across 466 units and 36 categories, including regional land units.",
+  "version": "0.1.0",
+  "websiteUrl": "https://unitconvertlab.com/mcp",
+  "repository": {
+    "url": "https://github.com/Aziz0346/unitconvertlab",
+    "source": "github"
+  },
+  "license": "MIT",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://nawpscdfwillbgkbupeo.supabase.co/functions/v1/mcp"
+    }
+  ]
+}
