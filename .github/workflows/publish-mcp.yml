@@ -12,14 +12,14 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install mcp-publisher
         run: |
-          MCP_PUBLISHER_VERSION="v1.1.1"
+          MCP_PUBLISHER_VERSION="v1.8.9"
           OS=$(uname -s | tr '[:upper:]' '[:lower:]')
           ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
-          curl -LO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz"
-          curl -LO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz.sigstore.json"
+          curl -fLO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${OS}_${ARCH}.tar.gz"
+          curl -fLO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${OS}_${ARCH}.tar.gz.sigstore.json"
           npm install -g @sigstore/cli
-          npx sigstore verify "mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz.sigstore.json" --certificate-identity-uri "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" --certificate-issuer "https://token.actions.githubusercontent.com"
-          tar -xzf "mcp-publisher_${MCP_PUBLISHER_VERSION#v}_${OS}_${ARCH}.tar.gz"
+          npx sigstore verify "mcp-publisher_${OS}_${ARCH}.tar.gz.sigstore.json" --certificate-identity-uri "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" --certificate-issuer "https://token.actions.githubusercontent.com"
+          tar -xzf "mcp-publisher_${OS}_${ARCH}.tar.gz"
       - name: Verify installation
         run: ./mcp-publisher --help
       - name: Run the Publisher
