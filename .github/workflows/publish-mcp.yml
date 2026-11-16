@@ -16,9 +16,8 @@ jobs:
           OS=$(uname -s | tr '[:upper:]' '[:lower:]')
           ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
           curl -fLO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${OS}_${ARCH}.tar.gz"
-          curl -fLO "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${OS}_${ARCH}.tar.gz.sigstore.json"
-          npm install -g @sigstore/cli
-          npx sigstore verify "mcp-publisher_${OS}_${ARCH}.tar.gz.sigstore.json" --certificate-identity-uri "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" --certificate-issuer "https://token.actions.githubusercontent.com"
+          # SHA-256 digest for mcp-publisher_linux_amd64.tar.gz as published on the v1.8.9 release page.
+          echo "4d527ca8f1ced0394c962dc925c2a4a4addef441cbefd62501c875e9481823a8  mcp-publisher_${OS}_${ARCH}.tar.gz" | sha256sum -c -
           tar -xzf "mcp-publisher_${OS}_${ARCH}.tar.gz"
       - name: Verify installation
         run: ./mcp-publisher --help
